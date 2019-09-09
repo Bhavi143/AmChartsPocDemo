@@ -1,10 +1,11 @@
 import {
   Component,
-  NgZone
+  NgZone,Input
 } from "@angular/core";
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
+
 
 am4core.useTheme(am4themes_animated);
 
@@ -14,49 +15,66 @@ am4core.useTheme(am4themes_animated);
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  datape : any;
+  country : string;
+  litres : string;
+  pieColor : string;
   title = 'AmChartsPoc';
-  constructor() {}
+  pieChart : any;
+  barChart : any;
+  lineChart : any;
+  constructor(private zone: NgZone) {}
   ngAfterViewInit() {
-    this.getPieData();
-    this.getBarData();
-    this.getLineData();
+    this.getPieChartData();
+    this.getBarChartData();
+    this.getLineChartData();
   }
 
-public async getPieData(){
-  let chart1 = am4core.create("chartpiediv", am4charts.PieChart);
-  chart1.data = [{
-      "country": "Lithuania",
-      "litres": 501.9
-  }, {
-      "country": "Czechia",
-      "litres": 301.9
-  }, {
-      "country": "Ireland",
-      "litres": 201.1
-  }, {
-      "country": "Germany",
-      "litres": 165.8
-  }, {
-      "country": "Australia",
-      "litres": 139.9
-  }, {
-      "country": "Austria",
-      "litres": 128.3
-  }, {
-      "country": "UK",
-      "litres": 99
-  }, {
-      "country": "Belgium",
-      "litres": 60
-  }, {
-      "country": "The Netherlands",
-      "litres": 50
-  }];
+public async getPieChartData(){
 
+  this.pieChart = am4core.create("chartpiediv", am4charts.PieChart);
+  this.pieChart.data = [{
+    "country": "Lithuania",
+    "litres": 501.9,
+    "color": "#008000"
+}, {
+    "country": "Czechia",
+    "litres": 301.9,
+    "color": "#B0C4DE"
+}, {
+    "country": "Ireland",
+    "litres": 201.1,
+    "color": "#1E90FF"
+}, {
+    "country": "Germany",
+    "litres": 165.8,
+    "color": "#ff0000"
+}, {
+    "country": "Australia",
+    "litres": 139.9,
+    "color": "#808000"
+}, {
+    "country": "Austria",
+    "litres": 128.3,
+    "color": "#ff0000"
+}, {
+    "country": "UK",
+    "litres": 99,
+    "color": "#008000"
+}, {
+    "country": "Belgium",
+    "litres": 60,
+    "color": "#FFFF00"
+}, {
+    "country": "The Netherlands",
+    "litres": 50,
+    "color": "#FFA500"
+}];
   // Add and configure Series
-  let pieSeries = chart1.series.push(new am4charts.PieSeries());
+  let pieSeries = this.pieChart.series.push(new am4charts.PieSeries());
   pieSeries.dataFields.value = "litres";
   pieSeries.dataFields.category = "country";
+  pieSeries.slices.template.propertyFields.fill = "color";
   pieSeries.slices.template.stroke = am4core.color("#fff");
   pieSeries.slices.template.strokeWidth = 2;
   pieSeries.slices.template.strokeOpacity = 1;
@@ -64,13 +82,15 @@ public async getPieData(){
   pieSeries.hiddenState.properties.opacity = 1;
   pieSeries.hiddenState.properties.endAngle = -90;
   pieSeries.hiddenState.properties.startAngle = -90;
+  //Add legend
+  this.pieChart.legend = new am4charts.Legend();
+  pieSeries.labels.template.bent = false;
+  pieSeries.ticks.template.disabled = true;
+  pieSeries.alignLabels = true;
 }
-public async getBarData(){
-/*Bar diagram */
-let chart = am4core.create("chartdiv", am4charts.XYChart);
-chart.scrollbarX = new am4core.Scrollbar();
-// Add data
-chart.data = [{
+public async getBarChartData(){
+this.barChart = am4core.create("chartdiv", am4charts.XYChart);
+this.barChart.data = [{
   "country": "USA",
   "visits": 3025
 }, {
@@ -107,45 +127,27 @@ chart.data = [{
   "country": "Canada",
   "visits": 441
 }];
-// Create axes
-let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+let categoryAxis = this.barChart.xAxes.push(new am4charts.CategoryAxis());
 categoryAxis.dataFields.category = "country";
 categoryAxis.renderer.grid.template.location = 0;
-categoryAxis.renderer.minGridDistance = 30;
-categoryAxis.renderer.labels.template.horizontalCenter = "right";
-categoryAxis.renderer.labels.template.verticalCenter = "middle";
-categoryAxis.renderer.labels.template.rotation = 270;
-categoryAxis.tooltip.disabled = true;
-categoryAxis.renderer.minHeight = 110;
-let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-valueAxis.renderer.minWidth = 50;
+categoryAxis.renderer.grid.template.strokeOpacity = 0;
+categoryAxis.renderer.minGridDistance = 10;
+
+let valueAxis = this.barChart.yAxes.push(new am4charts.ValueAxis());
+valueAxis.renderer.grid.template.strokeOpacity = 0;
 // Create series
-let series = chart.series.push(new am4charts.ColumnSeries());
-series.sequencedInterpolation = true;
+let series = this.barChart.series.push(new am4charts.ColumnSeries());
 series.dataFields.valueY = "visits";
 series.dataFields.categoryX = "country";
-series.tooltipText = "[{categoryX}: bold]{valueY}[/]";
-series.columns.template.strokeWidth = 0;
-series.tooltip.pointerOrientation = "vertical";
-series.columns.template.column.cornerRadiusTopLeft = 10;
-series.columns.template.column.cornerRadiusTopRight = 10;
-series.columns.template.column.fillOpacity = 0.8;
-// on hover, make corner radiuses bigger
-let hoverState = series.columns.template.column.states.create("hover");
-hoverState.properties.cornerRadiusTopLeft = 0;
-hoverState.properties.cornerRadiusTopRight = 0;
-hoverState.properties.fillOpacity = 1;
-series.columns.template.adapter.add("fill", function(fill, target) {
-  return chart.colors.getIndex(target.dataItem.index);
-});
-// Cursor
-chart.cursor = new am4charts.XYCursor();
+series.name = "Visits";
+
 }
-public async getLineData(){
+
+public async getLineChartData(){
   //Line diagrams
-let chartline = am4core.create("chartLinediv", am4charts.XYChart);
+this.lineChart = am4core.create("chartLinediv", am4charts.XYChart);
 // Add data
-chartline.data = [{
+this.lineChart.data = [{
   "date": new Date(2018, 3, 20),
   "value": 90
 }, {
@@ -164,23 +166,29 @@ chartline.data = [{
   "date": new Date(2018, 3, 25),
   "value": 81
 }];
-// Create axes
-let dateAxis = chartline.xAxes.push(new am4charts.DateAxis());
+// Create axis
+let dateAxis = this.lineChart.xAxes.push(new am4charts.DateAxis());
 // Create value axis
-let valueAxis1 = chartline.yAxes.push(new am4charts.ValueAxis());
+let valueAxis1 = this.lineChart.yAxes.push(new am4charts.ValueAxis());
 // Create series
-let lineSeries = chartline.series.push(new am4charts.LineSeries());
+let lineSeries = this.lineChart.series.push(new am4charts.LineSeries());
 lineSeries.dataFields.valueY = "value";
 lineSeries.dataFields.dateX = "date";
 lineSeries.name = "Sales";
 lineSeries.strokeWidth = 3;
 // Add simple bullet
-let bullet = lineSeries.bullets.push(new am4charts.Bullet());
+let bullet = lineSeries.bullets.push(new am4charts.CircleBullet());
 let image = bullet.createChild(am4core.Image);
-image.href = "https://www.amcharts.com/lib/images/star.svg";
-image.width = 30;
-image.height = 30;
-image.horizontalCenter = "middle";
-image.verticalCenter = "middle";  
 }
+ngOnDestroy() {
+   if (this.pieChart) {
+      this.pieChart.dispose();
+    }
+    if (this.barChart) {
+      this.barChart.dispose();
+    }
+    if (this.lineChart) {
+      this.lineChart.dispose();
+    }
+  }
 }
