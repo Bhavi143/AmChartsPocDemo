@@ -22,13 +22,14 @@ export class AppComponent {
   title = 'AmChartsPoc';
   pieChart : any;
   barChart : any;
+  chart : any;
   lineChart : any;
   constructor(private zone: NgZone) {}
   ngAfterViewInit() {
     this.getPieChartData();
     this.getBarChartData();
     this.getLineChartData();
-    this.getStackBarChart();
+    this.treemap();
   }
 
 public async getPieChartData(){
@@ -70,7 +71,7 @@ public async getPieChartData(){
     "litres": 50,
     "color": "#FFA500"
 }];
-var pieSeries = this.pieChart.series.push(new am4charts.PieSeries());
+let pieSeries = this.pieChart.series.push(new am4charts.PieSeries());
 this.pieChart.radius = "75%";
 pieSeries.dataFields.value = "litres";
 pieSeries.dataFields.category = "country";
@@ -94,31 +95,41 @@ pieSeries.labels.template.bent = false;
 this.pieChart.legend.position = "right";
 //Disable legend click
 this.pieChart.legend.itemContainers.template.clickable = false;
+//Add space in legend
+this.pieChart.legend.itemContainers.template.paddingTop = 2;
+this.pieChart.legend.itemContainers.template.paddingBottom = 2
 }
 
 public async getBarChartData(){
 this.barChart = am4core.create("chartdiv", am4charts.XYChart);
 this.barChart.data = [{
   "country": "USA",
-  "visits": 3025
+  "visits": 3025,
+  "color": "#008000"
 }, {
   "country": "China",
-  "visits": 1882
+  "visits": 1882,
+  "color": "#008000"
 }, {
   "country": "Japan",
-  "visits": 1809
+  "visits": 1809,
+  "color": "#008000"
 }, {
   "country": "Germany",
-  "visits": 1322
+  "visits": 1322,
+  "color": "#008000"
 }, {
   "country": "UK",
-  "visits": 1122
+  "visits": 1122,
+  "color": "#008000"
 }, {
   "country": "France",
-  "visits": 1114
+  "visits": 1114,
+  "color": "#008000"
 }, {
   "country": "India",
-  "visits": 984
+  "visits": 984,
+  "color": "#008000"
 }, {
   "country": "Spain",
   "visits": 711
@@ -141,10 +152,11 @@ let series = this.barChart.series.push(new am4charts.ColumnSeries());
 series.sequencedInterpolation = true;
 series.dataFields.valueY = "visits";
 series.dataFields.categoryX = "country";
+
 // tooltip to show details on click of Bar
 series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/]";
 //To get Label value on top of each bar
-var valueLabel = series.bullets.push(new am4charts.LabelBullet());
+let valueLabel = series.bullets.push(new am4charts.LabelBullet());
 valueLabel.label.text = "{valueY}";
 valueLabel.label.fontSize = 20;
 valueLabel.label.dy = -15;
@@ -212,66 +224,102 @@ bullet.circle.stroke = am4core.color("orange");
 
 }
 
-public async getStackBarChart(){
-  let chart = am4core.create("chartStackdiv", am4charts.XYChart);
-// Add data
+public async treemap(){
+let chart = am4core.create("treemapdiv", am4charts.TreeMap);
 chart.data = [{
-  "year": "2016",
-  "europe": 2.5,
-  "namerica": 2.5,
-  "asia": 2.1,
-  "lamerica": 0.3,
-  "meast": 0.2,
-  "africa": 0.1
-}, {
-  "year": "2017",
-  "europe": 2.6,
-  "namerica": 2.7,
-  "asia": 2.2,
-  "lamerica": 0.3,
-  "meast": 0.3,
-  "africa": 0.1
-}, {
-  "year": "2018",
-  "europe": 2.8,
-  "namerica": 2.9,
-  "asia": 2.4,
-  "lamerica": 0.3,
-  "meast": 0.3,
-  "africa": 0.1
-}];
-
-// Create axes
-let categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
-categoryAxis.dataFields.category = "year";
-categoryAxis.renderer.grid.template.opacity = 0;
-categoryAxis.renderer.line.strokeOpacity = 2;
-categoryAxis.title.text="(Millions)";
-let valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
-valueAxis.min = 0;
-valueAxis.renderer.grid.template.opacity = 0;
-valueAxis.renderer.ticks.template.strokeOpacity = 0.5;
-valueAxis.renderer.ticks.template.stroke = am4core.color("#495C43");
-valueAxis.renderer.ticks.template.length = 10;
-valueAxis.renderer.line.strokeOpacity = 0.5;
-valueAxis.renderer.baseGrid.disabled = true;
-valueAxis.renderer.minGridDistance = 40;
-
-// Create series
-function createSeries(field, name) {
-  let series = chart.series.push(new am4charts.ColumnSeries());
-  series.dataFields.valueX = field;
-  series.dataFields.categoryY = "year";
-  series.stacked = true;
-  series.name = name;
+name: "First",
+children: [
+{
+name: "A1",
+value: 500
+},
+{
+  name: "A4",
+  value: 300
+  },
+  {
+    name: "A5",
+    value: 200
+    },
+{
+name: "A2",
+value: 60
+},
+{
+name: "A3",
+value: 30
 }
+]
+},
+{
+name: "Second",
+children: [
+{
+name: "B1",
+value: 135
+},
+{
+name: "B2",
+value: 98
+},
+{
+name: "B3",
+value: 56
+}
+]
+},
+{
+name: "Third",
+children: [
+{
+name: "C1",
+value: 435
+},
+{
+name: "C2",
+value: 130
+},
+{
+name: "C3",
+value: 126,
+    "color": "#FFFF00"
+},
+{
+name: "C4",
+value: 26,
+    "color": "#FFA500"
+}]
+}];
+chart.colors.step = 2;
+chart.dataFields.value = "value";
+chart.dataFields.name = "name";
+chart.dataFields.children = "children";
+chart.zoomable = false;
+let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+dateAxis.renderer.grid.template.location = 0;
+dateAxis.renderer.minGridDistance = 30;
+dateAxis.renderer.grid.template.disabled = true;
+dateAxis.renderer.tooltip.disabled = true;
+dateAxis.renderer.line.strokeOpacity = 0;
 
-createSeries("europe", "Europe");
-createSeries("namerica", "North America");
-createSeries("asia", "Asia");
-createSeries("lamerica", "Latin America");
-createSeries("meast", "Middle East");
-createSeries("africa", "Africa");
+// Create value axis
+let valueAxis1 = chart.yAxes.push(new am4charts.ValueAxis());
+//valueAxis1.renderer.grid.template.disabled = true;
+valueAxis1.renderer.tooltip.disabled = true;
+valueAxis1.renderer.line.strokeOpacity = 2;
+valueAxis1.min = 0;
+valueAxis1.max = 400;
+
+let level0SeriesTemplate = chart.seriesTemplates.create("0");
+let level0ColumnTemplate = level0SeriesTemplate.columns.template;
+level0ColumnTemplate.fillOpacity = 0;
+level0ColumnTemplate.strokeWidth = 1;
+level0ColumnTemplate.strokeOpacity = 0;
+let level1SeriesTemplate = chart.seriesTemplates.create("1");
+level1SeriesTemplate.tooltip.dy = -15;
+level1SeriesTemplate.tooltip.pointerOrientation = "vertical";
+let level1ColumnTemplate = level1SeriesTemplate.columns.template;
+level1SeriesTemplate.strokeOpacity = 1;
 }
 
 ngOnDestroy() {
