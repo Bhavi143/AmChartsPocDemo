@@ -1,6 +1,6 @@
 import {
   Component,
-  NgZone,Input
+  NgZone,Input, ɵConsole
 } from "@angular/core";
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
@@ -104,32 +104,25 @@ public async getBarChartData(){
 this.barChart = am4core.create("chartdiv", am4charts.XYChart);
 this.barChart.data = [{
   "country": "USA",
-  "visits": 3025,
-  "color": "#008000"
+  "visits": 3025
 }, {
   "country": "China",
-  "visits": 1882,
-  "color": "#008000"
+  "visits": 1882
 }, {
   "country": "Japan",
-  "visits": 1809,
-  "color": "#008000"
+  "visits": 1809
 }, {
   "country": "Germany",
-  "visits": 1322,
-  "color": "#008000"
+  "visits": 1322
 }, {
   "country": "UK",
-  "visits": 1122,
-  "color": "#008000"
+  "visits": 1122
 }, {
   "country": "France",
-  "visits": 1114,
-  "color": "#008000"
+  "visits": 1114
 }, {
   "country": "India",
-  "visits": 984,
-  "color": "#008000"
+  "visits": 984
 }, {
   "country": "Spain",
   "visits": 711
@@ -145,21 +138,31 @@ let valueAxis = this.barChart.yAxes.push(new am4charts.ValueAxis());
 valueAxis.renderer.labels.template.disabled = true;
 valueAxis.renderer.grid.template.strokeOpacity = 0;
 valueAxis.title.text ="(Millions)";
+
 // to get name in diagnol manner
 //categoryAxis.renderer.labels.template.rotation = 90;
 // Create series
 let series = this.barChart.series.push(new am4charts.ColumnSeries());
-series.sequencedInterpolation = true;
+//series.sequencedInterpolation = true;
 series.dataFields.valueY = "visits";
 series.dataFields.categoryX = "country";
-
-// tooltip to show details on click of Bar
 series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/]";
+// to dynamically pass colors to colummns based on condition
+series.columns.template.adapter.add("fill", function (fill, target) {
+  let dataItem = target.dataItem;   
+  console.log("dataItem"+dataItem);
+  if(dataItem.valueY < 1000){
+        return am4core.color("#a8b3b7");
+      }else if(dataItem.valueY > 1000){
+        return am4core.color("#00008B");
+      }
+});
 //To get Label value on top of each bar
 let valueLabel = series.bullets.push(new am4charts.LabelBullet());
 valueLabel.label.text = "{valueY}";
 valueLabel.label.fontSize = 20;
 valueLabel.label.dy = -15;
+
 }
 
 public async getLineChartData(){
@@ -191,10 +194,6 @@ this.lineChart.data = [{
   "value": 81,
   "lineColor": "#FFA500"
 }];
-// Set up data source
-//this.lineChart.dataSource.url = "/src/assets/lineChartData.Json";
-//this.lineChart.dataSource.parser = new am4core.JSONParser();
-//this.lineChart.dataSource.parser.options.emptyAs = 0;
 // Create axis
 let dateAxis = this.lineChart.xAxes.push(new am4charts.DateAxis());
 dateAxis.renderer.grid.template.location = 0;
