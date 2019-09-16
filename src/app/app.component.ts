@@ -8,13 +8,342 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 
 
 am4core.useTheme(am4themes_animated);
-
+const data = {
+  chart: {
+    caption: "Monthly recurring revenue",
+    yaxisname: "Revenue",
+    subcaption: "(On GAAP basis)",
+    yaxisminvalue: "-2000",
+    numberPrefix : "$",
+    showValues : "0",
+    plottooltext:
+      "$seriesName in $label was <b>$dataValue</b>  ($percentValue of monthly total)",
+    decimals: "1",
+    theme: "fusion",
+    plotSpacePercent : "0"
+    
+  },
+  categories: [
+    {
+      category: [
+        {
+          label: "Dec-17"
+        },
+        {
+          label: "Jan-18"
+        },
+        {
+          label: "Feb-18"
+        },
+        {
+          label: "Mar-18"
+        },
+        {
+          label: "Apr-18"
+        },
+        {
+          label: "May-18"
+        },
+        {
+          label: "Jun-18"
+        },
+        {
+          label: "Jul-18"
+        },
+        {
+          label: "Aug-18"
+        },
+        {
+          label: "Sep-18"
+        },
+        {
+          label: "Oct-18"
+        },
+        {
+          label: "Nov-18"
+        },
+        {
+          label: "Dec-18"
+        }
+      ]
+    }
+  ],
+  dataset: [
+    {
+      seriesname: "MRR",
+     data: [
+        {
+          value: "7750"
+        },
+		 {
+          value: "7160"
+        },
+		{
+          value: "5610"
+        },
+		{
+          value: "4390"
+        },
+		{
+          value: "3570"
+        },
+		{
+          value: "3050"
+        },
+		{
+          value: "2740"
+        },
+		{
+          value: "2350"
+        },
+		{
+          value: "1890"
+        },
+		{
+          value: "1300"
+        },
+		 {
+          value: "1110"
+        },
+		{
+          value: "930"
+        },
+		{
+          value: "810"
+        }
+      ]
+    },
+    {
+      seriesname: "New business",
+      data: [
+        {
+          value: "4070"
+        },
+        {
+          value: "2660"
+        },
+        {
+          value: "2140"
+        },
+		{
+          value: "1790"
+        },
+		 {
+          value: "1510"
+        },
+		 {
+          value: "1350"
+        },
+		{
+          value: "1160"
+        },
+		{
+          value: "900"
+        },
+		{
+          value: "490"
+        },
+		{
+          value: "420"
+        },
+		{
+          value: "390"
+        },
+		 {
+          value: "380"
+        },
+      ]
+    },
+    {
+      seriesname: "Upsell",
+      data: [
+        {
+          value: "220"
+        },
+        {
+          value: "240"
+        },
+        {
+          value: "280"
+        },
+        {
+          value: "350"
+        },
+        {
+          value: "580"
+        },
+        {
+          value: "630"
+        },
+        {
+          value: "670"
+        },
+        {
+          value: "740"
+        },
+        {
+          value: "790"
+        },
+        {
+          value: "920"
+        },
+        {
+          value: "1050"
+        },
+        {
+          value: "1290"
+        },
+        {
+          value: "1320"
+        }
+      ]
+    },
+    {
+      seriesname: "Consulting",
+      data: [
+        {
+          value: "0"
+        },
+        {
+          value: "170"
+        },
+        {
+          value: "170"
+        },
+        {
+          value: "130"
+        },
+        {
+          value: "80"
+        },
+        {
+          value: "60"
+        },
+        {
+          value: "60"
+        },
+        {
+          value: "60"
+        },
+        {
+          value: "50"
+        },
+        {
+          value: "50"
+        },
+        {
+          value: "20"
+        },
+        {
+          value: "0"
+        },
+        {
+          value: "0"
+        }
+      ]
+    },
+    {
+      seriesname: "Churn",
+      data: [
+        {
+          value: "-650"
+        },
+        {
+          value: "-630"
+        },
+        {
+          value: "-500"
+        },
+        {
+          value: "-350"
+        },
+        {
+          value: "-320"
+        },
+        {
+          value: "-260"
+        },
+        {
+          value: "-150"
+        },
+        {
+          value: "-110"
+        },
+        {
+          value: "-100"
+        },
+        {
+          value: "-90"
+        },
+        {
+          value: "-70"
+        },
+        {
+          value: "-50"
+        },
+        {
+          value: "-50"
+        }
+      ]
+    },
+    {
+      seriesname: "Downgrades",
+      data: [
+        {
+          value: "-1660"
+        },
+        {
+          value: "-1650"
+        },
+        {
+          value: "-1520"
+        },
+        {
+          value: "-1320"
+        },
+        {
+          value: "-1060"
+        },
+        {
+          value: "-900"
+        },
+        {
+          value: "-780"
+        },
+        {
+          value: "-680"
+        },
+        {
+          value: "-580"
+        },
+        {
+          value: "-320"
+        },
+        {
+          value: "-260"
+        },
+        {
+          value: "-210"
+        },
+        {
+          value: "-180"
+        }
+      ]
+    }
+  ]
+};
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  width = 900;
+  height = 600;
+  type = "stackedcolumn2d";
+  dataFormat = "json";
+  dataSource = data;
+  
   datape : any;
   country : string;
   litres : string;
@@ -146,7 +475,7 @@ let series = this.barChart.series.push(new am4charts.ColumnSeries());
 //series.sequencedInterpolation = true;
 series.dataFields.valueY = "visits";
 series.dataFields.categoryX = "country";
-series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/]";
+series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}";
 // to dynamically pass colors to colummns based on condition
 series.columns.template.adapter.add("fill", function (fill, target) {
   let dataItem = target.dataItem;   
@@ -203,7 +532,7 @@ dateAxis.renderer.tooltip.disabled = true;
 dateAxis.renderer.line.strokeOpacity = 1;
 // Create value axis
 let valueAxis1 = this.lineChart.yAxes.push(new am4charts.ValueAxis());
-//valueAxis1.renderer.grid.template.disabled = true;
+valueAxis1.renderer.grid.template.disabled = false;
 valueAxis1.renderer.tooltip.disabled = true;
 valueAxis1.renderer.line.strokeOpacity = 2;
 valueAxis1.title.text = "Premium (Millions)";
@@ -211,10 +540,7 @@ valueAxis1.title.text = "Premium (Millions)";
 let lineSeries = this.lineChart.series.push(new am4charts.LineSeries());
 lineSeries.dataFields.valueY = "value";
 lineSeries.dataFields.dateX = "date";
-lineSeries.name = "Sales";
-lineSeries.strokeWidth = 3;
 lineSeries.propertyFields.stroke = "lineColor";
-lineSeries.propertyFields.fill = "lineColor";
 // Add simple bullet
 let bullet = lineSeries.bullets.push(new am4charts.CircleBullet());
 let image = bullet.createChild(am4core.Image);
