@@ -11,13 +11,18 @@ import * as FusionCharts from "fusioncharts";
 import * as Charts from "fusioncharts/fusioncharts.charts";
 
 import * as FusionTheme from "fusioncharts/themes/fusioncharts.theme.fusion";
+import { BarChartComponent } from './bar-chart/bar-chart.component';
+import { StackBarChartComponent } from './stack-bar-chart/stack-bar-chart.component';
+
 
 // Pass the fusioncharts library and chart modules
 FusionChartsModule.fcRoot(FusionCharts, Charts, FusionTheme);
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    BarChartComponent,
+    StackBarChartComponent,
   ],
   imports: [
     BrowserModule,

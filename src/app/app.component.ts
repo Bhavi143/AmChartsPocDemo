@@ -2,12 +2,17 @@ import {
   Component,
   NgZone,Input, ɵConsole
 } from "@angular/core";
+import { HttpClient } from '@angular/common/http';
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-
-
+import * as d3 from "d3";
+import * as d3Scale from "d3-scale";
+import { DataModel } from 'src/app/data.model';
+import { Observable } from 'rxjs';
+/** For Am Charts */
 am4core.useTheme(am4themes_animated);
+/** For Fusion Charts */
 const data = {
   chart: {
     caption: "Monthly recurring revenue",
@@ -332,18 +337,37 @@ const data = {
     }
   ]
 };
+export interface Margin {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  /**D3 Charts */
+  private margin: Margin;
+  private widthd3: number;
+  private heightd3: number;
+  private svg: any;     // TODO replace all `any` by the right type
+  private x: any;
+  private y: any;
+  private z: any;
+  private g: any;
+  private retentionY: any;
+  private retentionX: any;
+  /** For Fusion Charts */
   width = 900;
   height = 600;
   type = "stackedcolumn2d";
   dataFormat = "json";
   dataSource = data;
-  
+  /** For Am Charts */
   datape : any;
   country : string;
   litres : string;
@@ -352,13 +376,20 @@ export class AppComponent {
   pieChart : any;
   barChart : any;
   chart : any;
+  name : string;
   lineChart : any;
-  constructor(private zone: NgZone) {}
+  dataNormalized = [];
+  data: Observable<DataModel>;
+  constructor(private http: HttpClient) {
+    this.data = this.http.get<DataModel>('./assets/data.json');
+  }
   ngAfterViewInit() {
     this.getPieChartData();
     this.getBarChartData();
     this.getLineChartData();
     this.treemap();
+    this.initMargins();
+    this.d3BarChart();
   }
 
 public async getPieChartData(){
@@ -646,6 +677,13 @@ level1SeriesTemplate.tooltip.pointerOrientation = "vertical";
 let level1ColumnTemplate = level1SeriesTemplate.columns.template;
 level1SeriesTemplate.strokeOpacity = 1;
 }
+private initMargins() {
+  this.margin = { top: 20, right: 20, bottom: 30, left: 100 };
+}
+
+public async d3BarChart(){}
+  
+
 
 ngOnDestroy() {
    if (this.pieChart) {
